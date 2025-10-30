@@ -66,7 +66,7 @@ kill -SIGTERM $(pgrep -f "uv run uvicorn")
 # Question 5
 # ----------
 
-# asumimos que Docker está instalado
+# asumimos que Docker está instalado y está corriendo
 
 # imagen a usar
 _imagen="agrigorev/zoomcamp-model:2025"
@@ -79,3 +79,17 @@ docker images --format "{{.Size}}" "${_imagen}"
 
 # Question 6
 # ----------
+
+# compilar el contenedor y producir la imagen `predict-churn`
+docker build -t predict-churn .
+
+# montar la imagen `predict-churn`
+# ~nota: podemos omitir `-t` si no queremos imprimir los logs de uvicorn/FastAPI con resaltado de sintaxis
+docker run -t --rm -p 9696:9696 predict-churn
+
+# hacer la consulta requerida
+# esta es idéntica a la de Q4, así que reutilizamos el script
+uv run Q4-request.py
+
+# detener los contenedores `predict-churn`
+kill -SIGTERM $(pgrep -f "/usr/bin/docker.*predict-churn")
